@@ -21,16 +21,13 @@ type TimeproXgConfig struct {
 	Password   string `toml:"password"`
 }
 
-var conf Config
-
-func init() {
+func main() {
+	var conf Config
 	_, err := toml.DecodeFile("config.toml", &conf)
 	if err != nil {
 		log.Fatal(err)
 	}
-}
 
-func main() {
 	app := cli.NewApp()
 	app.Name = "timepro-xg"
 	app.Usage = "TimePro-XG CLI Tool"
@@ -42,7 +39,7 @@ func main() {
 			Usage: "timepro-xg in <- Going to work!",
 			Action: func(c *cli.Context) error {
 				fmt.Printf("Do you really go to work? [y/n] :")
-				attendanceRequest("PUNCH1", conf.Conf.UserId, conf.Conf.Password, "PUNCH1")
+				attendanceRequest(conf, "PUNCH1", "PUNCH1")
 				if askForConfirmation() {
 					fmt.Printf("今日も一日がんばるぞい!\n")
 				}
@@ -55,7 +52,7 @@ func main() {
 			Usage: "timepro-xg out <- Leaving work!",
 			Action: func(c *cli.Context) error {
 				fmt.Printf("Do you really leaving work? [y/n] :")
-				attendanceRequest("PUNCH2", conf.Conf.UserId, conf.Conf.Password, "PUNCH2")
+				attendanceRequest(conf, "PUNCH2", "PUNCH2")
 				if askForConfirmation() {
 					fmt.Printf("今日も一日お疲れ様でした!\n")
 				}
@@ -68,11 +65,11 @@ func main() {
 	app.Run(os.Args)
 }
 
-func attendanceRequest(userId, password, pageStatus, process string) error {
+func attendanceRequest(conf Config, pageStatus, process string) error {
 	values := url.Values{}
 	values.Add("PAGESTATUS", pageStatus)
-	values.Add("LoginID", userId)
-	values.Add("PassWord", password)
+	values.Add("LoginID", conf.Conf.UserId)
+	values.Add("PassWord", conf.Conf.Password)
 	values.Add("PROCESS", process)
 
 	req, err := http.NewRequest("POST", conf.Conf.RequestUrl, nil)
