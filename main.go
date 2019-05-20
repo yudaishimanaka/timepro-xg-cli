@@ -32,12 +32,11 @@ func main() {
 			Usage: "timepro-xg in <- Going to work!",
 			Action: func(c *cli.Context) error {
 				fmt.Printf("Do you really go to work? [y/n] :")
-				if err := attendanceRequest("PUNCH1", "PUNCH1"); err != nil {
-					log.Fatal(err)
-				}
-
 				if askForConfirmation() {
 					fmt.Printf("今日も一日がんばるぞい!\n")
+					if err := attendanceRequest("PUNCH1", "PUNCH1"); err != nil {
+						log.Fatal(err)
+					}
 				}
 
 				return nil
@@ -48,12 +47,11 @@ func main() {
 			Usage: "timepro-xg out <- Leaving work!",
 			Action: func(c *cli.Context) error {
 				fmt.Printf("Do you really leaving work? [y/n] :")
-				if err := attendanceRequest("PUNCH2", "PUNCH2"); err != nil {
-					log.Fatal(err)
-				}
-
 				if askForConfirmation() {
 					fmt.Printf("今日も一日お疲れ様でした!\n")
+					if err := attendanceRequest("PUNCH2", "PUNCH2"); err != nil {
+						log.Fatal(err)
+					}
 				}
 
 				return nil
